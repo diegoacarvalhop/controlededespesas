@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<header th:fragment="cabecalho">
+		<nav
+			class="navbar navbar-inverse navbar navbar-dark bg-dark fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="btn btn-dark navbar-toggle pull-left">
+						<i class="oi oi-calculator" style="font-size: 30px;"></i>
+					</button>
+					<a class="navbar-brand " th:href="@{/}">Controle de Despesas</a>
+				</div>
+				<div>
+					<div style="float: left;">
+						<form th:action="@{/logout}" method="post"
+							sec:authorize="isAuthenticated()"
+							class="form-inline mt-2 mt-md-0">
+							<div class="btn-group mb-2 mr-sm-2">
+								<button type="button" class="btn btn-light">
+									<i class="fas fa-user"></i> <span class=""
+										sec:authentication="name">Bob</span>
+								</button>
+								<button type="button"
+									class="btn btn-danger dropdown-toggle dropdown-toggle-split"
+									data-toggle="dropdown" aria-haspopup="true"
+									aria-expanded="false"></button>
+								<div class="dropdown-menu">
+									<a class="btn dropdown-item" th:href="@{/usuario/listar}"
+										role="button">Perfil</a>
+									<button type="submit" class="dropdown-item">Sair</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</header>
+</body>
+</html>

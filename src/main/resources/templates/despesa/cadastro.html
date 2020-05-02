@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+
+	<section class="layout-content" layout:fragment="corpo">
+		<div class="page-header">
+			<nav class="navbar navbar-expand-md navbar-top bg-light">
+				<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+					<ul class="navbar-nav">
+						<li class="nav-item active"><i class="oi oi-caret-right"></i>
+							<span>Cadastrar Despesa</span></li>
+					</ul>
+				</div>
+				<a class="btn btn-primary btn-md" th:href="@{/despesa/listar}"
+					role="button"> <span class="oi oi-spreadsheet" title="Cadastro"
+					aria-hidden="true"></span> <span>Listar Despesas</span>
+				</a>
+			</nav>
+		</div>
+
+		<div class="container" id="cadastro">
+			<div th:replace="fragments/alert"></div>
+			<form
+				th:action="${despesa.id == null} ? @{/despesa/salvar} : @{/despesa/editar}"
+				th:object="${despesa}" method="POST">
+				<div class="form-row">
+					<div class="form-group col-md-10">
+						<label for="descricao">Descrição</label> <input type="text"
+							class="form-control" id="descricao" autofocus="autofocus"
+							th:field="*{descricao}"
+							th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'"
+							th:readonly="${parcelaQuidata} ? 'readonly'" maxlength="60" />
+						<div class="invalid-feedback">
+							<span th:errors="*{descricao}"></span>
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-3">
+						<label for="tipoDespesa">Tipo de Despesa</label> <select
+							id="tipoDespesa" class="form-control" th:field="*{tipoDespesa}"
+							th:classappend="${#fields.hasErrors('tipoDespesa')} ? 'is-invalid'"
+							th:readonly="${parcelaQuidata} ? 'readonly'"
+							th:style="${parcelaQuidata} ? 'pointer-events: none; touch-action: none;'"
+							th:tabindex="${parcelaQuidata} ? -1"
+							th:aria-disabled="${parcelaQuidata} ? true">
+							<option value="">Selecione...</option>
+							<option th:each="tipoDespesa : ${tiposDespesas}"
+								th:value="${tipoDespesa.id}" th:text="${tipoDespesa.descricao}"></option>
+						</select>
+						<div class="invalid-feedback">
+							<span th:errors="*{tipoDespesa}"></span>
+						</div>
+					</div>
+					<div class="form-group col-md-7">
+						<label for="formaPagamento">Forma de Pagamento</label> <select
+							id="formaPagamento" class="form-control"
+							th:field="*{formaPagamento}"
+							th:classappend="${#fields.hasErrors('formaPagamento')} ? 'is-invalid'"
+							th:readonly="${parcelaQuidata} ? 'readonly'"
+							th:style="${parcelaQuidata} ? 'pointer-events: none; touch-action: none;'"
+							th:tabindex="${parcelaQuidata} ? -1"
+							th:aria-disabled="${parcelaQuidata} ? true">
+							<option value="">Selecione...</option>
+							<option th:each="formaPagamento : ${formasPagamentos}"
+								th:value="${formaPagamento.id}"
+								th:text="${#strings.concat(formaPagamento.descricaoCartao, 
+															' terminado em ', 
+															formaPagamento.ultimosDigitos, 
+															' (', formaPagamento.tipoPagamento.descricao, 
+															')')}">
+							</option>
+						</select>
+						<div class="invalid-feedback">
+							<span th:errors="*{formaPagamento}"></span>
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-4">
+						<label for="valor">Valor</label> <input type="text"
+							class="form-control" id="valor" data-mask="#.##0,00"
+							data-mask-reverse="true" th:field="*{valor}"
+							th:classappend="${#fields.hasErrors('valor')} ? 'is-invalid'"
+							th:readonly="${parcelaQuidata} ? 'readonly'" maxlength="10" />
+						<div class="invalid-feedback">
+							<span th:errors="*{valor}"></span>
+						</div>
+					</div>
+					<div class="form-group col-md-2">
+						<label for="quantidadeParcelas">Quantidade de Parcelas</label> <input
+							type="text" class="form-control" id="quantidadeParcelas"
+							th:field="*{quantidadeParcelas}"
+							th:classappend="${#fields.hasErrors('quantidadeParcelas')} ? 'is-invalid'"
+							onkeypress="return somenteNumeros(event)" maxlength="3"
+							th:readonly="${parcelaQuidata} ? 'readonly'" />
+						<div class="invalid-feedback">
+							<span th:errors="*{quantidadeParcelas}"></span>
+						</div>
+					</div>
+					<div class="form-group col-md-4">
+						<label for="dataDespesa">Data da Despesa</label> <input
+							type="date" class="form-control" id="dataDespesa"
+							th:field="*{dataDespesa}"
+							th:classappend="${#fields.hasErrors('dataDespesa')} ? 'is-invalid'"
+							th:readonly="${parcelaQuidata} ? 'readonly'" />
+						<div class="invalid-feedback">
+							<span th:errors="*{dataDespesa}"></span>
+						</div>
+					</div>
+				</div>
+				<input type="hidden" id="id" th:field="*{id}" />
+				<div class="form-row">
+					<div class="form-group col-md-10" style="text-align: right;">
+						<button type="submit" class="btn btn-primary btn-sm"
+							th:style="${parcelaQuidata} ? 'display: none;'">Salvar</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="container"
+			th:style="${despesa.id == null} ? 'display: none;' : 'margin-top: 30px;'">
+			<div class="table-responsive col-md-10">
+				<h3 style="text-align: center">
+					<span>Parcelas</span>
+				</h3>
+				<br>
+				<table class="table table-striped table-hover table-sm">
+					<thead>
+						<tr>
+							<th style="text-align: center">Parcela</th>
+							<th style="text-align: center">Valor</th>
+							<th style="text-align: center">Data Parcela</th>
+							<th style="text-align: center">Situação</th>
+							<th style="text-align: center">Ação</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="controleDespesa : ${despesa.controleDespesas}">
+							<td th:text="${controleDespesa.parcela}"
+								style="text-align: center"></td>
+							<td th:text="|R$ ${{controleDespesa.valor}}|"
+								style="text-align: center"></td>
+							<td
+								th:text="${#temporals.format(controleDespesa.dataParcela, 'dd/MM/yyyy')}"
+								style="text-align: center"></td>
+							<td th:text="${controleDespesa.status}"
+								style="text-align: center"></td>
+							<td style="text-align: center" colspan="2"><a
+								class="btn btn-info btn-sm"
+								th:href="@{/despesa/quitarcontroledespesa/{id}/{quitar} (id=${controleDespesa.id}, quitar=${true})}"
+								role="button"
+								th:style="${controleDespesa.status == 'QUITADO'} ? 'display: none;'">
+									<span class="oi oi-check" title="Quitar" aria-hidden="true"></span>
+							</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

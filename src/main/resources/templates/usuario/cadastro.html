@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<link rel="icon" th:href="@{/image/favicon.png}" />
+<!-- Bootstrap core CSS -->
+<link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet" />
+<link
+	th:href="@{/webjars/open-iconic/font/css/open-iconic-bootstrap.min.css}"
+	rel="stylesheet" />
+<!-- Custom styles for this template -->
+<link th:href="@{/css/style.css}" rel="stylesheet" />
+</head>
+<body>
+	<div class="center">
+		<div class="card">
+			<div class="card-header"
+				th:style="${usuario.id != null} ? 'display: none;'">
+				<h2>Cadastro de Usuário</h2>
+			</div>
+			<div class="card-header"
+				th:style="${usuario.id == null} ? 'display: none;'">
+				<h2>Editar Usuário</h2>
+				<h6 style="color: red;">Após a edição do usuário você será
+					direcionado para a página de login.</h6>
+			</div>
+			<div class="card-body" id="cadastro">
+				<div th:replace="fragments/alert"></div>
+				<form
+					th:action="${usuario.id == null} ? @{/usuario/salvar} : @{/usuario/editar}"
+					th:object="${usuario}" method="POST">
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="email">E-mail</label> <input type="text"
+								class="form-control" id="email" autofocus="autofocus"
+								th:field="*{email}"
+								th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" />
+							<div class="invalid-feedback">
+								<span th:errors="*{email}"></span>
+							</div>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="senha">Senha</label> <input type="text"
+								class="form-control" id="senha" autofocus="autofocus"
+								th:field="*{senha}"
+								th:classappend="${#fields.hasErrors('senha')} ? 'is-invalid'" />
+							<div class="invalid-feedback">
+								<span th:errors="*{senha}"></span>
+							</div>
+						</div>
+					</div>
+					<input type="hidden" id="id" th:field="*{id}" />
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+						</div>
+						<div class="form-group col-md-6"
+							th:style="${usuario.id == null} ? 'text-align: right;' : 'display: none;'">
+							<a class="btn btn btn-primary btn-sm" role="button"
+								th:href="@{/login}">Login</a>
+						</div>
+						<div class="form-group col-md-6"
+							th:style="${usuario.id != null} ? 'text-align: right;' : 'display: none;'">
+							<a class="btn btn-primary btn-sm" type="button"
+								href="javascript:history.back()">Voltar a página anterior</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<footer class="layout-footer-usuario-error">
+		<div class="container">
+			<span class="footer-copy">&copy; 2020 Diego Assis. Todos os
+				direitos reservados.</span>
+		</div>
+	</footer>
+	<script src="/js/usuario.js"></script>
+</body>
+</html>

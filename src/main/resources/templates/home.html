@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<nav class="navbar navbar-expand-md bg-light">
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><i class="oi oi-caret-right"></i>
+						<span>Home</span></li>
+				</ul>
+			</div>
+		</nav>
+		<div class="container">
+			<div th:replace="fragments/alert"></div>
+			<h4>Despesas recentes</h4>
+			<div class="container">
+				<div class="card shadown-sm bg-white rounded"
+					style="margin-top: 20px; width: 65%; padding-bottom: 30px;"
+					th:each="despesa: ${despesas}">
+					<div class="card-body" style="height: 105px !important;">
+						<span class="card-title"
+							style="font-weight: italy; color: grey; padding-top: 5px;"
+							th:text="${despesa.Descricao}"></span> <span
+							th:text="|(${#temporals.format(despesa.dataDespesa, 'dd/MM/yyyy')}) |"></span>
+						<br /> <span
+							th:text="|Despesa: ${despesa.tipoDespesa.descricao}|"></span> <br />
+						<span
+							th:text="|Forma de Pagamento: ${despesa.formaPagamento.descricaoCartao}|"></span>
+						<br /> <span
+							th:text="|Quantidade de Parcelas: ${despesa.quantidadeParcelas}|"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

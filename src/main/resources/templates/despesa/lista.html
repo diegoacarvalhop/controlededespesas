@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<nav class="navbar navbar-expand-md bg-light">
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><i class="oi oi-caret-right"></i>
+						<span>Lista de Despesas</span></li>
+				</ul>
+				<a class="btn btn-primary btn-md" th:href="@{/despesa/cadastrar}"
+					role="button"> <span class="oi oi-plus" title="Cadastro"
+					aria-hidden="true"></span> <span>Cadastrar Despesa</span>
+				</a>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="table-responsive">
+				<div th:replace="fragments/alert"></div>
+				<table class="table table-striped table-hover table-sm">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Descrição</th>
+							<th style="text-align: center">Data da Despesa <a class=""
+								th:style="${pageDespesa.registros.size() == 0} ? 'display: none'"
+								th:href="@{/despesa/listar(page=${pageDespesa.pagina}, dir=desc)}"
+								tabindex="-1"> <span class="oi oi-arrow-bottom"></span></a><a
+								class=""
+								th:style="${pageDespesa.registros.size() == 0} ? 'display: none'"
+								th:href="@{/despesa/listar(page=${pageDespesa.pagina}, dir=asc)}"
+								tabindex="-1"> <span class="oi oi-arrow-top"></span>
+							</a></th>
+							<th style="text-align: center">Situação</th>
+							<th style="text-align: center">Mais Informações</th>
+							<th style="text-align: center">Ação</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="despesa : ${pageDespesa.registros}">
+							<td th:text="${despesa.id}"></td>
+							<td th:text="${despesa.descricao}"></td>
+							<td
+								th:text="${#temporals.format(despesa.dataDespesa, 'dd/MM/yyyy')}"
+								style="text-align: center"></td>
+							<td th:text="${despesa.status}" style="text-align: center"></td>
+							<td style="text-align: center">
+								<button type="button" class="btn btn-secondary btn-sm"
+									data-container="body" data-toggle="popover"
+									data-placement="right"
+									th:attr="data-content=${#strings.concat('Tipo de Despesa: ', despesa.tipoDespesa.descricao, 
+																			'<br>Forma de Pagamento: ', despesa.formaPagamento.descricaoCartao, 
+																			'<br>Valor: R$ ', despesa.valor, 
+																			'<br>Quantidade de Parcelas: ', despesa.quantidadeParcelas)}">
+									<span class="oi oi-eye" title="Mais Informações"
+										aria-hidden="true"></span>
+								</button>
+							</td>
+							<td style="text-align: center" colspan="2"><a
+								class="btn btn-info btn-sm"
+								th:href="@{/despesa/editar/{id} (id=${despesa.id})}"
+								role="button"> <span class="oi oi-brush" title="Editar"
+									aria-hidden="true"></span>
+							</a>
+								<button
+									th:id="${#strings.concat('btn_despesa/excluir/', despesa.id)}"
+									type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+									data-target="#myModal">
+									<span class="oi oi-circle-x" title="Excluir" aria-hidden="true"></span>
+								</button></td>
+						</tr>
+					</tbody>
+				</table>
+				<nav aria-label="Page navigation example"
+					th:style="${pageDespesa.registros.size() == 0} ? 'display: none'">
+					<ul class="pagination justify-content-center">
+						<li
+							th:class="${pageDespesa.pagina == 1} ? 'page-item disabled' : 'page-item'"
+							title="Primeira página"><a class="page-link"
+							th:href="@{/despesa/listar(page=${1}, dir=${pageDespesa.direcao})}"
+							tabindex="-1"><i class="oi oi-media-step-backward"></i></a></li>
+						<li
+							th:class="${pageDespesa.pagina == 1} ? 'page-item disabled' : 'page-item'"
+							title="Voltar página"><a class="page-link"
+							th:href="@{/despesa/listar(page=${pageDespesa.pagina - 1}, dir=${pageDespesa.direcao})}"
+							tabindex="-1"><i class="oi oi-media-skip-backward"></i></a></li>
+						<li class="page-item"
+							th:each="numero : ${pageDespesa.numerosPaginas}"
+							th:title="|Página ${numero}|"><a class="page-link"
+							th:text="${numero}"
+							th:href="@{/despesa/listar(page=${numero}, dir=${pageDespesa.direcao})}"></a></li>
+						<li
+							th:class="${pageDespesa.pagina == pageDespesa.totalDePaginas} ? 'page-item disabled' : 'page-item'"
+							title="Próxima página"><a class="page-link"
+							th:href="@{/despesa/listar(page=${pageDespesa.pagina + 1}, dir=${pageDespesa.direcao})}"><i
+								class="oi oi-media-skip-forward"></i></a></li>
+						<li
+							th:class="${pageDespesa.pagina == pageDespesa.totalDePaginas} ? 'page-item disabled' : 'page-item'"
+							title="Última página"><a class="page-link"
+							th:href="@{/despesa/listar(page=${pageDespesa.totalDePaginas}, dir=${pageDespesa.direcao})}"
+							tabindex="-1"><i class="oi oi-media-step-forward"></i></a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		<div th:replace="fragments/modal :: modal"></div>
+	</section>
+</body>
+</html>
